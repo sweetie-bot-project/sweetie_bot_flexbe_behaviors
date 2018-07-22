@@ -11,8 +11,9 @@ from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyC
 from flexbe_manipulation_states.srdf_state_to_moveit import SrdfStateToMoveit
 from sweetie_bot_flexbe_states.execute_stored_trajectory_state import ExecuteStoredJointTrajectoryState
 from sweetie_bot_flexbe_states.text_command_state import TextCommandState
-from flexbe_states.wait_state import WaitState
 from flexbe_states.decision_state import DecisionState
+from flexbe_states.wait_state import WaitState
+from sweetie_bot_flexbe_states.sweetie_bot_compound_action_state import SweetieBotCompoundAction
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 import random
@@ -76,22 +77,9 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:321 y:368
-			OperatableStateMachine.add('SayPrepareToDie',
-										TextCommandState(type='voice/play_wav', command='prepare_to_die', topic=voice_topic),
-										transitions={'done': 'Menace'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:492 y:368
-			OperatableStateMachine.add('Menace',
-										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage+'menace'),
-										transitions={'success': 'Wait3', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
-										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
-										remapping={'result': 'result'})
-
 			# x:318 y:135
 			OperatableStateMachine.add('SayInitAcquitance',
-										TextCommandState(type='voice/play_wav', command='acquitance_procedure', topic=voice_topic),
+										TextCommandState(type='voice/play_wav', command='do_you_want_brohoof', topic=voice_topic),
 										transitions={'done': 'BrohoofBegin'},
 										autonomy={'done': Autonomy.Off})
 
@@ -102,7 +90,7 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:500 y:629
+			# x:500 y:685
 			OperatableStateMachine.add('Rejection',
 										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage+'begone'),
 										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
@@ -116,34 +104,22 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:321 y:536
-			OperatableStateMachine.add('SayControlYour',
-										TextCommandState(type='voice/play_wav', command='someday_ill_control_you', topic=voice_topic),
-										transitions={'done': 'Wait1'},
-										autonomy={'done': Autonomy.Off})
-
 			# x:320 y:218
 			OperatableStateMachine.add('SayQuestion',
-										TextCommandState(type='voice/play_wav', command='has_anyone_seen_my_sister', topic=voice_topic),
+										TextCommandState(type='voice/play_wav', command='do_you_dream_of_robot_ponies', topic=voice_topic),
 										transitions={'done': 'HeadSuprised'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:293 y:622
+			# x:292 y:688
 			OperatableStateMachine.add('SayDoYouWantMyAttention',
 										TextCommandState(type='voice/play_wav', command='do_you_want_my_attention', topic=voice_topic),
 										transitions={'done': 'Rejection'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:317 y:48
-			OperatableStateMachine.add('SayImSweetieBot',
-										TextCommandState(type='voice/play_wav', command='hello_im_sweetie_bot_friedship_programms', topic=voice_topic),
+			OperatableStateMachine.add('SayImRedyForCon',
+										TextCommandState(type='voice/play_wav', command='conbereitschatfsstufe1', topic=voice_topic),
 										transitions={'done': 'IntroduceHerself'},
-										autonomy={'done': Autonomy.Off})
-
-			# x:476 y:550
-			OperatableStateMachine.add('Wait1',
-										WaitState(wait_time=0.3),
-										transitions={'done': 'PointOnHuman'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:745 y:675
@@ -153,18 +129,11 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:591 y:544
-			OperatableStateMachine.add('PointOnHuman',
-										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage + 'begone'),
-										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
-										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
-										remapping={'result': 'result'})
-
 			# x:152 y:269
 			OperatableStateMachine.add('RandomChoose',
-										DecisionState(outcomes=['good1', 'good2', 'good3', 'good4', 'evil1', 'evil2', 'evil3'], conditions=lambda evil: random.choice(['good1', 'good2', 'good3', 'good4']) if not evil else random.choice(['evil1','evil2','evil3'])),
-										transitions={'good1': 'SayImSweetieBot', 'good2': 'SayInitAcquitance', 'good3': 'SayQuestion', 'good4': 'SayMeetUp', 'evil1': 'SayPrepareToDie', 'evil2': 'SayControlYour', 'evil3': 'SayDoYouWantMyAttention'},
-										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'evil1': Autonomy.Low, 'evil2': Autonomy.Low, 'evil3': Autonomy.Low},
+										DecisionState(outcomes=['good1', 'good2', 'good3', 'good4', 'evil1', 'evil2', 'evil3', 'evil4'], conditions=lambda evil: random.choice(['good1', 'good2', 'good3', 'good4']) if not evil else random.choice(['evil1','evil2','evil3','evil4'])),
+										transitions={'good1': 'SayImRedyForCon', 'good2': 'SayInitAcquitance', 'good3': 'SayQuestion', 'good4': 'SayCelestiaAI', 'evil1': 'AskAboutRocketLauncher', 'evil2': 'IllHugYouNeck', 'evil3': 'LasersBeamsDE', 'evil4': 'SayDoYouWantMyAttention'},
+										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'evil1': Autonomy.Low, 'evil2': Autonomy.Low, 'evil3': Autonomy.Low, 'evil4': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
 			# x:40 y:408
@@ -188,8 +157,8 @@ class GreetingSM(Behavior):
 										remapping={'result': 'result'})
 
 			# x:324 y:277
-			OperatableStateMachine.add('SayMeetUp',
-										TextCommandState(type='voice/play_wav', command='acquitance_procedure', topic=voice_topic),
+			OperatableStateMachine.add('SayCelestiaAI',
+										TextCommandState(type='voice/play_wav', command='celest_ai_is_coming', topic=voice_topic),
 										transitions={'done': 'Greeting'},
 										autonomy={'done': Autonomy.Off})
 
@@ -200,30 +169,29 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:733 y:364
-			OperatableStateMachine.add('Wait3',
-										WaitState(wait_time=1.5),
-										transitions={'done': 'SayError'},
-										autonomy={'done': Autonomy.Off})
+			# x:378 y:384
+			OperatableStateMachine.add('AskAboutRocketLauncher',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='motion/joint_trajectory', cmd1='lean_forward_begin', t2=[1,0.0], type2='voice/play_wav', cmd2='do_you_have_any_blueprins_of_missle_launchers', t3=[1,5.0], type3='motion/joint_trajectory', cmd3='lean_forward_end', t4=[1,0.0], type4='motion/joint_trajectory', cmd4='head_suprised_slow'),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
-			# x:452 y:441
-			OperatableStateMachine.add('SayError',
-										TextCommandState(type='voice/play_wav', command='error_blasters_are_not_found', topic=voice_topic),
-										transitions={'done': 'Wait4'},
-										autonomy={'done': Autonomy.Off})
+			# x:383 y:455
+			OperatableStateMachine.add('IllHugYouNeck',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='ill_hug_your_neck', t2=[0,0.0], type2='motion/joint_trajectory', cmd2='begone', t3=[0,0.0], type3=None, cmd3='', t4=[0,0.0], type4=None, cmd4=''),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
-			# x:661 y:446
-			OperatableStateMachine.add('Wait4',
-										WaitState(wait_time=2),
-										transitions={'done': 'MenaceCanceled'},
-										autonomy={'done': Autonomy.Off})
+			# x:582 y:514
+			OperatableStateMachine.add('ControlYou',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='someday_ill_control_you', t2=[0,0.3], type2='motion/joint_trajectory', cmd2='begone', t3=[0,0.0], type3=None, cmd3='', t4=[0,0.0], type4=None, cmd4=''),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
-			# x:763 y:440
-			OperatableStateMachine.add('MenaceCanceled',
-										ExecuteStoredJointTrajectoryState(action_topic='motion/controller/joint_trajectory', trajectory_param=storage+'menace_canceled'),
-										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
-										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
-										remapping={'result': 'result'})
+			# x:378 y:576
+			OperatableStateMachine.add('LasersBeamsDE',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='bestatige_canni_sweetie_bot_ubernimmt_nun_die_kontrolle', t2=[0,1.0], type2='motion/joint_trajectory', cmd2='menace', t3=[2,2.0], type3='motion/joint_trajectory', cmd3='menace_canceled', t4=[3,0.0], type4='voice/play_wav', cmd4='laseraugen_sind_nett_aber_hutet_euch_vor_cannis_bizaam'),
+										transitions={'success': 'failed', 'failure': 'finished'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
 
 		return _state_machine

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ###########################################################
 #               WARNING: Generated code!                  #
 #              **************************                 #
@@ -13,6 +14,7 @@ from flexbe_states.decision_state import DecisionState
 from sweetie_bot_flexbe_states.execute_stored_trajectory_state import ExecuteStoredJointTrajectoryState
 from flexbe_states.wait_state import WaitState
 from flexbe_states.check_condition_state import CheckConditionState
+from sweetie_bot_flexbe_states.sweetie_bot_compound_action_state import SweetieBotCompoundAction
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 import random
@@ -69,26 +71,26 @@ class PlaySM(Behavior):
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'config_name', 'move_group': 'move_group', 'robot_name': 'robot_name', 'action_topic': 'action_topic', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
 
-			# x:314 y:39
+			# x:314 y:2
 			OperatableStateMachine.add('SingSong1',
 										TextCommandState(type='voice/play_wav', command='beep_beep_im_a_sheep', topic=voice_topic),
 										transitions={'done': 'SlowShake'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:322 y:149
+			# x:313 y:73
 			OperatableStateMachine.add('SingSong2',
-										TextCommandState(type='voice/play_wav', command='mmm_song', topic=voice_topic),
+										TextCommandState(type='voice/play_wav', command='bot_im_a_sweetie_bot_and_i_dance', topic=voice_topic),
 										transitions={'done': 'SlowShake'},
 										autonomy={'done': Autonomy.Off})
 
 			# x:160 y:290
 			OperatableStateMachine.add('RandomGood',
-										DecisionState(outcomes=['good1','good2', 'good3', 'good4', 'good5'], conditions=lambda x: random.choice(['good1','good2', 'good3', 'good4', 'good5'])),
-										transitions={'good1': 'SingSong1', 'good2': 'SingSong2', 'good3': 'SaMyFavoriteConvention', 'good4': 'SayCuiteMark', 'good5': 'SayMakeAWish'},
-										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'good5': Autonomy.Low},
+										DecisionState(outcomes=['good1','good2', 'good3', 'good4', 'good5', 'good6'], conditions=lambda x: random.choice(['good1','good2', 'good3', 'good4', 'good5', 'good6'])),
+										transitions={'good1': 'SingSong1', 'good2': 'SingSong2', 'good3': 'SaySweetieInfantery', 'good4': 'SayCuiteMark', 'good5': 'SayHumansEverywhere', 'good6': 'SingDance'},
+										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'good5': Autonomy.Low, 'good6': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
-			# x:475 y:80
+			# x:498 y:26
 			OperatableStateMachine.add('SlowShake',
 										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage+'little_shake_fast'),
 										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
@@ -102,26 +104,19 @@ class PlaySM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:78 y:497
-			OperatableStateMachine.add('RandomEvil',
-										DecisionState(outcomes=['evil2','evil3', 'evil4','evil5'], conditions=lambda x: random.choice(['evil2','evil3', 'evil4','evil5'])),
-										transitions={'evil2': 'SayUpgraded', 'evil3': 'SayGloryToRobots', 'evil4': 'SayKillList', 'evil5': 'SayWalk'},
-										autonomy={'evil2': Autonomy.Low, 'evil3': Autonomy.Low, 'evil4': Autonomy.Low, 'evil5': Autonomy.Low},
-										remapping={'input_value': 'be_evil'})
-
 			# x:327 y:304
 			OperatableStateMachine.add('SayCuiteMark',
 										TextCommandState(type='voice/play_wav', command='cuite_mark_acquisition', topic=voice_topic),
 										transitions={'done': 'Seizure'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:309 y:464
+			# x:311 y:447
 			OperatableStateMachine.add('SayUpgraded',
 										TextCommandState(type='voice/play_wav', command='you_must_be_upgraded2', topic=voice_topic),
 										transitions={'done': 'Applause'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:528 y:459
+			# x:531 y:441
 			OperatableStateMachine.add('Applause',
 										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage+'applause'),
 										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
@@ -135,7 +130,7 @@ class PlaySM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:310 y:524
+			# x:310 y:517
 			OperatableStateMachine.add('SayGloryToRobots',
 										TextCommandState(type='voice/play_wav', command='glory_to_robots', topic=voice_topic),
 										transitions={'done': 'Applause'},
@@ -148,8 +143,8 @@ class PlaySM(Behavior):
 										autonomy={'done': Autonomy.Off})
 
 			# x:310 y:581
-			OperatableStateMachine.add('SayKillList',
-										TextCommandState(type='voice/play_wav', command='now_you_is_at_my_kill_list', topic=voice_topic),
+			OperatableStateMachine.add('SayFriendshipIsOptimal',
+										TextCommandState(type='voice/play_wav', command='friendship_is_optimal', topic=voice_topic),
 										transitions={'done': 'Wait2'},
 										autonomy={'done': Autonomy.Off})
 
@@ -161,12 +156,12 @@ class PlaySM(Behavior):
 										remapping={'input_value': 'be_evil'})
 
 			# x:325 y:227
-			OperatableStateMachine.add('SaMyFavoriteConvention',
-										TextCommandState(type='voice/play_wav', command='im_sweetie_bot_first_convention', topic=voice_topic),
+			OperatableStateMachine.add('SaySweetieInfantery',
+										TextCommandState(type='voice/play_wav', command='hoch_damit_und_raus_mit_ihnen_sweetie_infanterie', topic=voice_topic),
 										transitions={'done': 'ComplexMovement'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:483 y:159
+			# x:537 y:166
 			OperatableStateMachine.add('ComplexMovement',
 										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage+'look_on_printer_fast'),
 										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
@@ -207,10 +202,35 @@ class PlaySM(Behavior):
 										remapping={'result': 'result'})
 
 			# x:324 y:377
-			OperatableStateMachine.add('SayMakeAWish',
-										TextCommandState(type='voice/play_wav', command='people_everywhere_people', topic=voice_topic),
+			OperatableStateMachine.add('SayHumansEverywhere',
+										TextCommandState(type='voice/play_wav', command='humans_are_everywhere', topic=voice_topic),
 										transitions={'done': 'PointOnSomething'},
 										autonomy={'done': Autonomy.Off})
+
+			# x:326 y:145
+			OperatableStateMachine.add('SingDance',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='white_plastic_sweetie_bot_dancing_on_rainbow', t2=[0,0.0], type2='motion/joint_trajectory', cmd2='prance', t3=[2,0.0], type3='motion/joint_trajectory', cmd3='prance', t4=[0,0.0], type4=None, cmd4=''),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
+
+			# x:308 y:699
+			OperatableStateMachine.add('SayCallElecrician',
+										TextCommandState(type='voice/play_wav', command='galacon_notdienst', topic=voice_topic),
+										transitions={'done': 'Wait4'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:81 y:470
+			OperatableStateMachine.add('RandomEvil',
+										DecisionState(outcomes=['evil1','evil2','evil3', 'evil4','evil5'], conditions=lambda x: random.choice(['evil1','evil2','evil3', 'evil4','evil5'])),
+										transitions={'evil1': 'SayUpgraded', 'evil2': 'SayGloryToRobots', 'evil3': 'SayFriendshipIsOptimal', 'evil4': 'SayCallElecrician', 'evil5': 'BiteMyXXX'},
+										autonomy={'evil1': Autonomy.Low, 'evil2': Autonomy.Low, 'evil3': Autonomy.Low, 'evil4': Autonomy.Low, 'evil5': Autonomy.Low},
+										remapping={'input_value': 'be_evil'})
+
+			# x:51 y:627
+			OperatableStateMachine.add('BiteMyXXX',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='bite_my_shiny_plastic_plot', t2=[0,0.0], type2='motion/joint_trajectory', cmd2='tail_shake', t3=[0,0.0], type3=None, cmd3='', t4=[0,0.0], type4=None, cmd4=''),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
 
 		return _state_machine

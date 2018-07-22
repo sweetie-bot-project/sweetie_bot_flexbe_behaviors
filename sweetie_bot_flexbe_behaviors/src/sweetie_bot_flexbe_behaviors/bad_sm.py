@@ -12,6 +12,7 @@ from flexbe_manipulation_states.srdf_state_to_moveit import SrdfStateToMoveit
 from flexbe_states.decision_state import DecisionState
 from sweetie_bot_flexbe_states.text_command_state import TextCommandState
 from sweetie_bot_flexbe_states.execute_stored_trajectory_state import ExecuteStoredJointTrajectoryState
+from sweetie_bot_flexbe_states.sweetie_bot_compound_action_state import SweetieBotCompoundAction
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 import random
@@ -71,11 +72,11 @@ class BadSM(Behavior):
 			# x:320 y:143
 			OperatableStateMachine.add('RandomChoiceGood',
 										DecisionState(outcomes=['good1', 'good2'], conditions=lambda x: random.choice(['good1', 'good2'])),
-										transitions={'good1': 'SayOverflow', 'good2': 'SayDizzy'},
+										transitions={'good1': 'SayDoNotRushMeDE2', 'good2': 'SayDizzy'},
 										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
-			# x:416 y:537
+			# x:491 y:554
 			OperatableStateMachine.add('SayDoNotTouch',
 										TextCommandState(type='voice/play_wav', command='do_not_touch_me', topic=voice_topic),
 										transitions={'done': 'HoofStamp'},
@@ -107,7 +108,7 @@ class BadSM(Behavior):
 										transitions={'done': 'NoHeadShake'},
 										autonomy={'done': Autonomy.Off})
 
-			# x:648 y:466
+			# x:744 y:557
 			OperatableStateMachine.add('HoofStamp',
 										ExecuteStoredJointTrajectoryState(action_topic=joint_trajectory_action, trajectory_param=storage + 'hoof_stamp'),
 										transitions={'success': 'finished', 'partial_movement': 'failed', 'invalid_pose': 'failed', 'failure': 'failed'},
@@ -117,8 +118,8 @@ class BadSM(Behavior):
 			# x:242 y:273
 			OperatableStateMachine.add('CheckEvil',
 										DecisionState(outcomes=['good', 'evil'], conditions=lambda x: 'evil' if x else 'good'),
-										transitions={'good': 'RandomChoiceGood', 'evil': 'SayDoNotTouch'},
-										autonomy={'good': Autonomy.Off, 'evil': Autonomy.Low},
+										transitions={'good': 'RandomChoiceGood', 'evil': 'RandomChoiceEvil'},
+										autonomy={'good': Autonomy.Off, 'evil': Autonomy.Off},
 										remapping={'input_value': 'be_evil'})
 
 			# x:129 y:436
@@ -127,6 +128,25 @@ class BadSM(Behavior):
 										transitions={'reached': 'CheckEvil', 'planning_failed': 'failed', 'control_failed': 'failed', 'param_error': 'failed'},
 										autonomy={'reached': Autonomy.Off, 'planning_failed': Autonomy.Off, 'control_failed': Autonomy.Off, 'param_error': Autonomy.Off},
 										remapping={'config_name': 'config_name', 'move_group': 'move_group', 'robot_name': 'robot_name', 'action_topic': 'action_topic', 'joint_values': 'joint_values', 'joint_names': 'joint_names'})
+
+			# x:499 y:49
+			OperatableStateMachine.add('SayDoNotRushMeDE2',
+										TextCommandState(type='voice/play_wav', command='hetz_mich_nicht', topic=voice_topic),
+										transitions={'done': 'Applause'},
+										autonomy={'done': Autonomy.Off})
+
+			# x:344 y:404
+			OperatableStateMachine.add('RandomChoiceEvil',
+										DecisionState(outcomes=['evil1', 'evil2'], conditions=lambda x: random.choice(['evil1', 'evil2'])),
+										transitions={'evil1': 'DoNotRushMeDE3', 'evil2': 'SayDoNotTouch'},
+										autonomy={'evil1': Autonomy.Low, 'evil2': Autonomy.Low},
+										remapping={'input_value': 'be_evil'})
+
+			# x:605 y:341
+			OperatableStateMachine.add('DoNotRushMeDE3',
+										SweetieBotCompoundAction(t1=[0,0.0], type1='voice/play_wav', cmd1='hetz_mich_nicht', t2=[0,0.0], type2='motion/joint_trajectory', cmd2='menace', t3=[2,0.0], type3='motion/joint_trajectory', cmd3='menace_canceled', t4=[0,0.0], type4=None, cmd4=''),
+										transitions={'success': 'finished', 'failure': 'failed'},
+										autonomy={'success': Autonomy.Off, 'failure': Autonomy.Off})
 
 
 		return _state_machine
