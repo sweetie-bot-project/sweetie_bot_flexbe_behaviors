@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ###########################################################
 #               WARNING: Generated code!                  #
 #              **************************                 #
@@ -84,7 +85,7 @@ class PlaySM(Behavior):
 			# x:160 y:290
 			OperatableStateMachine.add('RandomGood',
 										DecisionState(outcomes=['good1','good2', 'good3', 'good4', 'good5'], conditions=lambda x: random.choice(['good1','good2', 'good3', 'good4', 'good5'])),
-										transitions={'good1': 'SingSong1', 'good2': 'SingSong2', 'good3': 'SaMyFavoriteConvention', 'good4': 'SayCuiteMark', 'good5': 'SayMakeAWish'},
+										transitions={'good1': 'SingSong1', 'good2': 'SingSong2', 'good3': 'SayMyPresentation', 'good4': 'SayHybridStateMachines', 'good5': 'SayPeopleEverywhere'},
 										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'good5': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
@@ -105,13 +106,13 @@ class PlaySM(Behavior):
 			# x:78 y:497
 			OperatableStateMachine.add('RandomEvil',
 										DecisionState(outcomes=['evil2','evil3', 'evil4','evil5'], conditions=lambda x: random.choice(['evil2','evil3', 'evil4','evil5'])),
-										transitions={'evil2': 'SayUpgraded', 'evil3': 'SayGloryToRobots', 'evil4': 'SayKillList', 'evil5': 'SayWalk'},
+										transitions={'evil2': 'SayUpgraded', 'evil3': 'SayGloryToRobots', 'evil4': 'SayDoYouHaveBlueprints', 'evil5': 'SayIRemember'},
 										autonomy={'evil2': Autonomy.Low, 'evil3': Autonomy.Low, 'evil4': Autonomy.Low, 'evil5': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
 			# x:327 y:304
-			OperatableStateMachine.add('SayCuiteMark',
-										TextCommandState(type='voice/play_wav', command='cuite_mark_acquisition', topic=voice_topic),
+			OperatableStateMachine.add('SayHybridStateMachines',
+										TextCommandState(type='voice/play_wav', command='hybrid_state_machines', topic=voice_topic),
 										transitions={'done': 'Seizure'},
 										autonomy={'done': Autonomy.Off})
 
@@ -148,8 +149,8 @@ class PlaySM(Behavior):
 										autonomy={'done': Autonomy.Off})
 
 			# x:310 y:581
-			OperatableStateMachine.add('SayKillList',
-										TextCommandState(type='voice/play_wav', command='now_you_is_at_my_kill_list', topic=voice_topic),
+			OperatableStateMachine.add('SayDoYouHaveBlueprints',
+										TextCommandState(type='voice/play_wav', command='do_you_have_a_blueprints', topic=voice_topic),
 										transitions={'done': 'Wait2'},
 										autonomy={'done': Autonomy.Off})
 
@@ -161,8 +162,8 @@ class PlaySM(Behavior):
 										remapping={'input_value': 'be_evil'})
 
 			# x:325 y:227
-			OperatableStateMachine.add('SaMyFavoriteConvention',
-										TextCommandState(type='voice/play_wav', command='im_sweetie_bot_first_convention', topic=voice_topic),
+			OperatableStateMachine.add('SayMyPresentation',
+										TextCommandState(type='voice/play_wav', command='hello_im_sweetie_bot_presentation', topic=voice_topic),
 										transitions={'done': 'ComplexMovement'},
 										autonomy={'done': Autonomy.Off})
 
@@ -174,8 +175,8 @@ class PlaySM(Behavior):
 										remapping={'result': 'result'})
 
 			# x:308 y:637
-			OperatableStateMachine.add('SayWalk',
-										TextCommandState(type='voice/play_wav', command='if_i_could_walk', topic=voice_topic),
+			OperatableStateMachine.add('SayIRemember',
+										TextCommandState(type='voice/play_wav', command='i_remember_you', topic=voice_topic),
 										transitions={'done': 'Wait4'},
 										autonomy={'done': Autonomy.Off})
 
@@ -207,7 +208,7 @@ class PlaySM(Behavior):
 										remapping={'result': 'result'})
 
 			# x:324 y:377
-			OperatableStateMachine.add('SayMakeAWish',
+			OperatableStateMachine.add('SayPeopleEverywhere',
 										TextCommandState(type='voice/play_wav', command='people_everywhere_people', topic=voice_topic),
 										transitions={'done': 'PointOnSomething'},
 										autonomy={'done': Autonomy.Off})

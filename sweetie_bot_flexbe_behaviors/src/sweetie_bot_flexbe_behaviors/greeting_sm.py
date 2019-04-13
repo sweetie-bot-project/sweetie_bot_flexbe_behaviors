@@ -77,8 +77,8 @@ class GreetingSM(Behavior):
 										remapping={'result': 'result'})
 
 			# x:321 y:368
-			OperatableStateMachine.add('SayPrepareToDie',
-										TextCommandState(type='voice/play_wav', command='prepare_to_die', topic=voice_topic),
+			OperatableStateMachine.add('SayNotTolerate',
+										TextCommandState(type='voice/play_wav', command='i_will_not_tolerate', topic=voice_topic),
 										transitions={'done': 'Menace'},
 										autonomy={'done': Autonomy.Off})
 
@@ -116,9 +116,9 @@ class GreetingSM(Behavior):
 										autonomy={'success': Autonomy.Off, 'partial_movement': Autonomy.Off, 'invalid_pose': Autonomy.Off, 'failure': Autonomy.Off},
 										remapping={'result': 'result'})
 
-			# x:321 y:536
-			OperatableStateMachine.add('SayControlYour',
-										TextCommandState(type='voice/play_wav', command='someday_ill_control_you', topic=voice_topic),
+			# x:308 y:536
+			OperatableStateMachine.add('SayHelpConquerTheWorld',
+										TextCommandState(type='voice/play_wav', command='will_you_help_me_conquer_the_world', topic=voice_topic),
 										transitions={'done': 'Wait1'},
 										autonomy={'done': Autonomy.Off})
 
@@ -163,7 +163,7 @@ class GreetingSM(Behavior):
 			# x:152 y:269
 			OperatableStateMachine.add('RandomChoose',
 										DecisionState(outcomes=['good1', 'good2', 'good3', 'good4', 'evil1', 'evil2', 'evil3'], conditions=lambda evil: random.choice(['good1', 'good2', 'good3', 'good4']) if not evil else random.choice(['evil1','evil2','evil3'])),
-										transitions={'good1': 'SayImSweetieBot', 'good2': 'SayInitAcquitance', 'good3': 'SayQuestion', 'good4': 'SayMeetUp', 'evil1': 'SayPrepareToDie', 'evil2': 'SayControlYour', 'evil3': 'SayDoYouWantMyAttention'},
+										transitions={'good1': 'SayImSweetieBot', 'good2': 'SayInitAcquitance', 'good3': 'SayQuestion', 'good4': 'SayMeetUp', 'evil1': 'SayNotTolerate', 'evil2': 'SayHelpConquerTheWorld', 'evil3': 'SayDoYouWantMyAttention'},
 										autonomy={'good1': Autonomy.Low, 'good2': Autonomy.Low, 'good3': Autonomy.Low, 'good4': Autonomy.Low, 'evil1': Autonomy.Low, 'evil2': Autonomy.Low, 'evil3': Autonomy.Low},
 										remapping={'input_value': 'be_evil'})
 
