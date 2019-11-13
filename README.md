@@ -1,8 +1,9 @@
 Sweetie Bot FlexBe behaviors 
 ============================
 
-This package contains Sweetie Bot [FlexBe](http://philserver.bplaced.net/fbe/index.php) behaviors and state.
-It is the part of [Sweetie Bot project](sweetiebot.net). 
+This package contains Sweetie Bot [FlexBe](http://philserver.bplaced.net/fbe/index.php) behaviors and additional state.
+The main flexbe states is now part of [SweetieBot repository](https://gitlab.com/sweetie-bot/sweetie_bot.git).
+See also [Sweetie Bot project](sweetiebot.net).
 
 Behavior package is new style  [Flexbe APP](https://github.com/flexbe/flexbe_app) behavior package. It is incompatible 
 with old one-behavior-per-package scheme used by `flexbe_widget`.
