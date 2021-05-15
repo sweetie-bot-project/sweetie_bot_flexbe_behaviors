@@ -153,44 +153,44 @@ eyes and head are controlled by sticks, other keys causes exit.
 
 	# Private functions can be added inside the following tags
 	# [MANUAL_FUNC]
-        def trigger(self, key_msg):
-            if not key_msg:
-                return False
-            keys = set(key_msg.keys)
-            return keys.intersection(('1', '2', '3', '4','start', 'select','left', 'right', 'up', 'down','tumble'))
+	def trigger(self, key_msg):
+		if not key_msg:
+			return False
+		keys = set(key_msg.keys)
+		return keys.intersection(('1', '2', '3', '4','start', 'select','left', 'right', 'up', 'down','tumble'))
 
-        def decision(self, key_msg):
-            keys = set(key_msg.keys)
-            if keys.intersection(('1', '2', '3', '4')):
-                return 'animation'
-            if keys.intersection(('start',)):
-                return 'exit'
-            if keys.intersection(('left', 'right', 'up', 'down')):
-                return 'walk'
-            return 'unknown'
+	def decision(self, key_msg):
+		keys = set(key_msg.keys)
+		if keys.intersection(('1', '2', '3', '4')):
+			return 'animation'
+		if keys.intersection(('start',)):
+			return 'exit'
+		if keys.intersection(('left', 'right', 'up', 'down')):
+			return 'walk'
+		return 'unknown'
 
-        def process_walk(self, key_msg):
-            mapping_walk = { 
-                    ('left',):  'turn_left_45',
-                    ('right',): 'turn_right_45', 
-                    ('up',):    'walk_fwd_40',
-                    ('down',):  'walk_back_20',
-                    ('up','left'):  'turn_left_20_20_45',
-                    ('up','right'): 'turn_right_20_20_45',
-                    ('L1', 'up'):   'walk_fwd_60',
-                    ('L1', 'left'):   'turn_left_90',
-                    ('L1', 'right'):   'turn_right_90',
-                    ('L1', 'left', 'down'):   'backslide_left_20_20_90',
-                    ('L1', 'right', 'down'):   'backslide_right_20_20_90',
-                    ('L2', 'left'):            'drift_left',
-                    ('L2', 'right'):           'drift_right',
-                    ('L2', 'right', 'down'):   'backslide_right_10_00_45',
-                    ('L2', 'left', 'down'):   'backslide_left_10_00_45',
-                }
-            keys = set(key_msg.keys).intersection(('left', 'right', 'up', 'down','L1','L2'))
-            for k, val in mapping_walk.iteritems():
-                if set(k) == keys:
-                    return val
-            return None
-                
+	def process_walk(self, key_msg):
+		mapping_walk = { 
+				('left',):  'turn_left_45',
+				('right',): 'turn_right_45', 
+				('up',):	'walk_fwd_40',
+				('down',):  'walk_back_20',
+				('up','left'):  'turn_left_20_20_45',
+				('up','right'): 'turn_right_20_20_45',
+				('L1', 'up'):   'walk_fwd_60',
+				('L1', 'left'):   'turn_left_90',
+				('L1', 'right'):   'turn_right_90',
+				('L1', 'left', 'down'):   'backslide_left_20_20_90',
+				('L1', 'right', 'down'):   'backslide_right_20_20_90',
+				('L2', 'left'):			'drift_left',
+				('L2', 'right'):		   'drift_right',
+				('L2', 'right', 'down'):   'backslide_right_10_00_45',
+				('L2', 'left', 'down'):   'backslide_left_10_00_45',
+			}
+		keys = set(key_msg.keys).intersection(('left', 'right', 'up', 'down','L1','L2'))
+		for k, val in mapping_walk.items():
+			if set(k) == keys:
+				return val
+		return None
+			
 	# [/MANUAL_FUNC]

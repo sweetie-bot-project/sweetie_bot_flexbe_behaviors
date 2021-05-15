@@ -206,26 +206,25 @@ class JoyAnimationSM(Behavior):
 
 	# Private functions can be added inside the following tags
 	# [MANUAL_FUNC]
-        def trigger(self, key_msg):
-            if not key_msg:
-                return False
-            keys = set(key_msg.keys)
-            return keys.intersection(('1', '2', '3', '4','start', 'select','left', 'right', 'up', 'down','tumble'))
+	def trigger(self, key_msg):
+		if not key_msg:
+			return False
+		keys = set(key_msg.keys)
+		return keys.intersection(('1', '2', '3', '4','start', 'select','left', 'right', 'up', 'down','tumble'))
 
-        def decision(self, key_msg):
-            key_mapping = { 
-                    '1': 'greet',
-                    '2': 'play',
-                    '3': 'cheer',
-                    '4': 'bad',
-                    'select': 'switch_evil',
-                    'start': 'start'
-                }
-            keys = set(key_msg.keys).intersection( key_mapping.keys() )
-            if keys:
-                return key_mapping[keys.pop()];
-            if set(key_msg.keys).intersection(('left', 'right', 'up', 'down')):
-                return 'walk'
-            return 'unknown'
-	
+	def decision(self, key_msg):
+		key_mapping = { 
+				'1': 'greet',
+				'2': 'play',
+				'3': 'cheer',
+				'4': 'bad',
+				'select': 'switch_evil',
+				'start': 'start'
+			}
+		keys = set(key_msg.keys).intersection( key_mapping.keys() )
+		if keys:
+			return key_mapping[keys.pop()];
+		if set(key_msg.keys).intersection(('left', 'right', 'up', 'down')):
+			return 'walk'
+		return 'unknown'
 	# [/MANUAL_FUNC]

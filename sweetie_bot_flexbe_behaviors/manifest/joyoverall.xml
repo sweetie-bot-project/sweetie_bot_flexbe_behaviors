@@ -14,8 +14,6 @@
 	<!-- Contained Behaviors -->
 	<contains name="JoyAnimation" />
 	<contains name="JoyWalk" />
-	<contains name="AutonomousBehavior2" />
-	<contains name="AutonomousBehavior" />
 
 	<!-- Available Parameters -->
 	<params>

@@ -8,14 +8,12 @@
 ###########################################################
 
 from flexbe_core import Behavior, Autonomy, OperatableStateMachine, ConcurrencyContainer, PriorityContainer, Logger
-from sweetie_bot_flexbe_states.set_joint_state import SetJointState
+from flexbe_states.decision_state import DecisionState
 from sweetie_bot_flexbe_behaviors.joyanimation_sm import JoyAnimationSM
 from sweetie_bot_flexbe_behaviors.joywalk_sm import JoyWalkSM
-from flexbe_states.decision_state import DecisionState
-from sweetie_bot_flexbe_behaviors.autonomousbehavior2_sm import AutonomousBehavior2SM
-from sweetie_bot_flexbe_states.wait_for_message_state import WaitForMessageState
 from sweetie_bot_flexbe_states.rand_head_movements import SweetieBotRandHeadMovements
-from sweetie_bot_flexbe_behaviors.autonomousbehavior_sm import AutonomousBehaviorSM
+from sweetie_bot_flexbe_states.set_joint_state import SetJointState
+from sweetie_bot_flexbe_states.wait_for_message_state import WaitForMessageState
 # Additional imports can be added inside the following tags
 # [MANUAL_IMPORT]
 from sweetie_bot_joystick.msg import KeyPressed
@@ -43,8 +41,6 @@ class JoyOverallSM(Behavior):
 		# references to used behaviors
 		self.add_behavior(JoyAnimationSM, 'JoyAnimation')
 		self.add_behavior(JoyWalkSM, 'JoyWalk')
-		self.add_behavior(AutonomousBehavior2SM, 'AutonomousBehavior2')
-		self.add_behavior(AutonomousBehaviorSM, 'AutonomousBehavior')
 
 		# Additional initialization code can be added inside the following tags
 		# [MANUAL_INIT]
@@ -56,7 +52,7 @@ class JoyOverallSM(Behavior):
 
 
 	def create(self):
-		# x:98 y:490, x:1089 y:260
+		# x:98 y:490, x:1023 y:487
 		_state_machine = OperatableStateMachine(outcomes=['finished', 'failed'])
 		_state_machine.userdata.be_evil = False
 		_state_machine.userdata.key_pressed_msg = KeyPressed()
@@ -93,7 +89,7 @@ class JoyOverallSM(Behavior):
 
 
 		with _state_machine:
-			# x:217 y:310
+			# x:249 y:302
 			OperatableStateMachine.add('SetHeadPoseNominal',
 										SetJointState(controller='motion/controller/joint_state_head', pose_param='nominal', pose_ns='saved_msgs/joint_state', tolerance=0.017, timeout=10.0, joint_topic="joint_states"),
 										transitions={'done': 'WaitKeyPressed', 'failed': 'failed', 'timeout': 'failed'},
@@ -113,38 +109,19 @@ class JoyOverallSM(Behavior):
 										autonomy={'timeout': Autonomy.Inherit, 'failed': Autonomy.Inherit, 'invalid_pose': Autonomy.Inherit, 'unknown_keys': Autonomy.Inherit},
 										remapping={'key_pressed_msg': 'key_pressed_msg'})
 
-			# x:641 y:329
-			OperatableStateMachine.add('CheckKeys',
-										DecisionState(outcomes=['walk','animation','start', 'unknown'], conditions=self.decision),
-										transitions={'walk': 'JoyWalk', 'animation': 'JoyAnimation', 'start': 'RandomChoice', 'unknown': 'WaitKeyPressed'},
-										autonomy={'walk': Autonomy.Off, 'animation': Autonomy.Off, 'start': Autonomy.Off, 'unknown': Autonomy.Off},
-										remapping={'input_value': 'key_pressed_msg'})
-
-			# x:443 y:565
-			OperatableStateMachine.add('AutonomousBehavior2',
-										self.use_behavior(AutonomousBehavior2SM, 'AutonomousBehavior2'),
-										transitions={'finished': 'SetHeadPoseNominal', 'failed': 'failed'},
-										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
-
 			# x:194 y:135
 			OperatableStateMachine.add('WaitKeyPressed',
 										_sm_waitkeypressed_0,
-										transitions={'pressed': 'JoyAnimation', 'timeout': 'RandomChoice', 'failed': 'failed'},
+										transitions={'pressed': 'JoyAnimation', 'timeout': 'finished', 'failed': 'failed'},
 										autonomy={'pressed': Autonomy.Inherit, 'timeout': Autonomy.Inherit, 'failed': Autonomy.Inherit},
 										remapping={'key_pressed_msg': 'key_pressed_msg', 'config': 'config'})
 
-			# x:545 y:431
-			OperatableStateMachine.add('RandomChoice',
-										DecisionState(outcomes=['one','two'], conditions=lambda x: 'one' if random.random()<0.0 else 'two'),
-										transitions={'one': 'WaitKeyPressed', 'two': 'WaitKeyPressed'},
-										autonomy={'one': Autonomy.Off, 'two': Autonomy.Off},
-										remapping={'input_value': 'config'})
-
-			# x:647 y:599
-			OperatableStateMachine.add('AutonomousBehavior',
-										self.use_behavior(AutonomousBehaviorSM, 'AutonomousBehavior'),
-										transitions={'finished': 'SetHeadPoseNominal', 'failed': 'failed'},
-										autonomy={'finished': Autonomy.Inherit, 'failed': Autonomy.Inherit})
+			# x:660 y:455
+			OperatableStateMachine.add('CheckKeys',
+										DecisionState(outcomes=['walk','animation','start', 'unknown'], conditions=self.decision),
+										transitions={'walk': 'JoyWalk', 'animation': 'JoyAnimation', 'start': 'finished', 'unknown': 'WaitKeyPressed'},
+										autonomy={'walk': Autonomy.Off, 'animation': Autonomy.Off, 'start': Autonomy.Off, 'unknown': Autonomy.Off},
+										remapping={'input_value': 'key_pressed_msg'})
 
 
 		return _state_machine
@@ -152,13 +129,13 @@ class JoyOverallSM(Behavior):
 
 	# Private functions can be added inside the following tags
 	# [MANUAL_FUNC]
-        def decision(self, key_msg):
-            keys = set(key_msg.keys)
-            if keys.intersection(('left','right','up','down')):
-                return 'walk'
-            if keys.intersection(('1','2','3','4')):
-                return 'animation'
-            if keys.intersection(('start',)):
-                return 'start'
-            return 'unknown'
+	def decision(self, key_msg):
+		keys = set(key_msg.keys)
+		if keys.intersection(('left','right','up','down')):
+			return 'walk'
+		if keys.intersection(('1','2','3','4')):
+			return 'animation'
+		if keys.intersection(('start',)):
+			return 'start'
+		return 'unknown'
 	# [/MANUAL_FUNC]
